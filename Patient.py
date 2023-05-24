@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
+import numpy as np
 
-
-class patient:
-    def __init__(self, ident):
-        self.ident = ident
-        self.crit_lev = 0
+class Patient:
+    
+    def __init__(self, pat_id, surv_state, crit_trans_prob):
+        self.pat_id = pat_id
+        self.surv_state = surv_state
+        self.appoints = []
+        self.crit_trans_prob = crit_trans_prob
+        self.crit_rate = 0
         self.crit_state = "STABLE"
-        self.location = "HOME"
+        
+    def update(self):
+        if self.crit_state == "STABLE":
+            if np.random.rand() < self.crit_trans_prob:
+                self.crit_state = "INCREASING"
         
