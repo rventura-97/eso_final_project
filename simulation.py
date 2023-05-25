@@ -4,7 +4,7 @@ from time import time
 from patient import Patient
 
 class Simulation:
-    def __init__(self, t_sim, num_patients, crit_trans_prob, t_crit_mean, t_crit_min, t_crit_max, surv_state, appointments_interval):
+    def __init__(self, t_sim, num_patients, crit_trans_prob, t_crit_mean, t_crit_min, t_crit_max, surv_state, appointments_interval,max_crit_reversal_prob,icu_death_base_prob, icu_t_max, icu_t_min):
         # Simulation variables
         self.t_sim = t_sim
         self.num_patients = num_patients
@@ -16,9 +16,13 @@ class Simulation:
         self.surv_state = surv_state
         self.appointments_interval = appointments_interval
         self.appoints_sched = []
+        self.max_crit_reversal_prob = max_crit_reversal_prob
+        self.icu_death_base_prob = icu_death_base_prob
+        self.icu_t_max = icu_t_max
+        self.icu_t_min = icu_t_min
+        self.sim_time = 0
         
         # Report variables
-        self.sim_time = 0
         self.icu_admissions = np.zeros(self.t_sim)
         
     def init(self):
@@ -44,7 +48,12 @@ class Simulation:
                 else:
                     t_appoint = False
                     
-                msg = self.patients[p].update(t, self.t_crit_mean, self.t_crit_min, self.t_crit_max, t_appoint)
+                msg = self.patients[p].update(t, self.t_crit_mean,\
+                                              self.t_crit_min, self.t_crit_max,\
+                                              t_appoint, self.max_crit_reversal_prob,\
+                                              self.icu_death_base_prob,\
+                                              self.icu_t_max,\
+                                              self.icu_t_min)
                 
                 # Record each patient's state at current time
                 if msg == "REACHED_FULLY_CRITICAL":
