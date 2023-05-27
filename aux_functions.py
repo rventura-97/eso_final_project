@@ -5,6 +5,14 @@ import sympy
 from scipy.optimize import bisect
 
 
+def generate_appointments_schedule(num_patients, appointments_interval, t_sim):
+    appoints_per_day = np.ceil(num_patients/appointments_interval)
+    appoints_sched = np.tile(np.arange(0,num_patients),np.int(np.ceil(appoints_per_day*t_sim/num_patients)))
+    appoints_sched = appoints_sched[0:np.int(appoints_per_day*t_sim)]
+    appoints_sched = appoints_sched.reshape(-1,np.int(appoints_per_day))
+    
+    return appoints_sched
+
 
 def compute_icu_surv_prob_map(base_surv_prob, max_icu_days, min_icu_days):
     icu_surv_prob_map = pd.DataFrame(data=np.zeros((max_icu_days-min_icu_days+1,3)),\
