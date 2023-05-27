@@ -17,6 +17,28 @@ plot(t,f);
 hold off;
 surv_prob = prod(f);
 
+%%
+t = 0:1:13;
+f = (1-13*(0.000871208)) + t*0.000871208;
+figure;
+plot(t,f);
+hold off;
+surv_prob = prod(f);
+
+%%
+t = 0:1:7;
+f = 0.06929288660903694*t;
+figure;
+plot(t,f);
+detect_prob = 1-prod(1-f(1:6));
+
+%%
+t = 0:1:7;
+f = 0.050638498154876276*t;
+figure;
+plot(t,f);
+detect_prob = 1-prod(1-f(2:7)); % 6 tentativas (7-1)
+
 
 %%
 t = 0:1:28;

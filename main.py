@@ -2,6 +2,7 @@
 from simulation import Simulation
 from aux_functions import compute_icu_surv_prob_map
 from aux_functions import generate_appointments_schedule
+from aux_functions import compute_remote_detect_prob_map
 
 # %% Simulation parameters (fixed)
 t_sim = 25*365
@@ -20,7 +21,8 @@ icu_surv_prob_map = compute_icu_surv_prob_map(icu_surv_base_prob,icu_t_max,icu_t
 # %% Simulation parameters (variable)
 appointments_interval = 28 # days
 appointments_schedule = generate_appointments_schedule(num_patients, appointments_interval, t_sim)
-
+remote_detection_prob = 0.7
+remote_detection_prob_map = compute_remote_detect_prob_map(remote_detection_prob, t_crit_max, t_crit_min)
 
 # %% Initialize simulation
 sim = Simulation(t_sim, num_patients, crit_trans_prob,\

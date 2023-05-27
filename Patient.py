@@ -21,15 +21,17 @@ class Patient:
         
         if self.alive == True:
             # Update criticality state
-            if self.crit_rate > 0:
-                self.crit_state = np.min([self.crit_state + self.crit_rate, 1])
-            elif self.crit_rate < 0:
-                self.crit_state = np.max([0, self.crit_state + self.crit_rate])
+            self.crit_state + self.crit_rate
+            if self.crit_rate > 0 and self.crit_rate < np.abs(1-self.crit_state):
+                self.crit_state = 1
+            elif self.crit_rate < 0 and np.abs(self.crit_rate) < np.abs(1-self.crit_state):
+                self.crit_state = 0
             
             # Random chance of starting transition to critical state
             if self.crit_state == 0 and self.crit_rate == 0:
                 if np.random.rand() < self.crit_trans_prob:
                    self.crit_rate = 1/np.round(np.random.triangular(t_crit_min, t_crit_mean, t_crit_max))
+            
                    
             # Patient resets criticality state, becomes stable
             if self.crit_state == 0 and self.crit_rate < 0:
@@ -46,7 +48,7 @@ class Patient:
                 
             # Try to diagnose criticality state if there is an appointment at current time
             if self.surv_state == "LOCAL" and t_appoint == True and \
-               self.crit_rate > 0 and self.crit_state < 1:
+               self.crit_rate > 0 and self.crit_state < 1: # self.crit_state > 0 (?)
                 # Random chance of correct positive diagnosis
                 if np.random.rand() < self.crit_state:   
                     update_msg = "LOCAL_DIAGNOSE_BEFORE_CRITICAL"
@@ -55,6 +57,9 @@ class Patient:
                     if np.random.rand() < -max_crit_reversal_prob*self.crit_state + max_crit_reversal_prob:
                         self.crit_rate = -self.crit_rate
                         self.crit_state_at_detection = None
+                        
+            # Try remote diagnose
+            
                     
             # Update alive state at ICU
             if self.crit_state == 1 and self.crit_rate == 0:
