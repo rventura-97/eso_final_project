@@ -4,10 +4,8 @@ from math import factorial
 
 class Patient:
     
-    def __init__(self, pat_id, surv_state, crit_trans_prob):
+    def __init__(self, pat_id):
         self.pat_id = pat_id
-        self.surv_state = surv_state
-        self.crit_trans_prob = crit_trans_prob
         self.crit_rate = 0
         self.crit_state = 0
         self.alive = True
@@ -16,7 +14,7 @@ class Patient:
         self.icu_death_prob = None
         self.icu_death_prob_rate = None
         
-    def update(self, t, t_crit_mean, t_crit_min, t_crit_max, t_appoint, max_crit_reversal_prob, icu_death_base_prob, icu_t_max, icu_t_min):
+    def update(self, t_crit_mean, t_crit_min, t_crit_max, t_appoint, max_crit_reversal_prob, surv_state, crit_trans_prob):
         update_msg = ""
         
         if self.alive == True:
@@ -41,10 +39,8 @@ class Patient:
             if self.crit_state == 1 and self.crit_rate > 0:
                 self.crit_rate = 0
                 update_msg = "REACHED_FULLY_CRITICAL"
-                self.t_icu_entry = t
                 if self.crit_state_at_detection is None:
-                    self.icu_death_prob_rate = np.power((1-icu_death_base_prob)/factorial(icu_t_max),1/icu_t_max)
-                    self.icu_death_prob = self.icu_death_prob_rate
+                    update_msg = "REACHED_FULLY_CRITICAL"
                 
             # Try to diagnose criticality state if there is an appointment at current time
             if self.surv_state == "LOCAL" and t_appoint == True and \
