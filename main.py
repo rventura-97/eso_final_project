@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # %% Import required modules
+import ray
 from simulation import Simulation
 from aux_functions import compute_icu_surv_prob_map
 from aux_functions import generate_appointments_schedule
