@@ -4,13 +4,12 @@ from time import time
 from patient import Patient
 
 class Simulation:
-    def __init__(self, sim_label, t_sim, num_patients, crit_trans_prob, t_crit_mean, t_crit_min, t_crit_max,\
+    def __init__(self, t_sim, num_patients, crit_trans_prob, t_crit_mean, t_crit_min, t_crit_max,\
                  surv_state, max_crit_reversal_prob,\
                  icu_t_max, icu_t_min, appointments_schedule,\
                  icu_surv_prob_map, remote_detection_prob_map):
         
         # Simulation variables
-        self.sim_label = sim_label
         self.t_sim = t_sim
         self.num_patients = num_patients
         self.patients = [None]*self.num_patients
