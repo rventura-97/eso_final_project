@@ -24,9 +24,9 @@ class Patient:
         if self.alive == True:
             # Update criticality state
             self.crit_state += self.crit_rate
-            if self.crit_rate > 0 and self.crit_rate > np.abs(1-self.crit_state):
+            if self.crit_rate > 0 and np.abs(1-self.crit_state) < 1/1000000:
                 self.crit_state = 1
-            elif self.crit_rate < 0 and np.abs(self.crit_rate) > np.abs(1-self.crit_state):
+            elif self.crit_rate < 0 and np.abs(self.crit_state) < 1/1000000: 
                 self.crit_state = 0
             
             # Random chance of starting transition to critical state
@@ -86,18 +86,17 @@ class Patient:
                         self.crit_rate = -self.crit_rate
                         self.crit_state_at_detection = None
                     
-            # Update alive state at ICU
+            # Update state at ICU
             if self.crit_state == 1 and self.crit_rate == 0 and self.icu_surv_prob < 1:
-                update_msg = "PATIENT_AT_ICU"
                 # Random chance of death
                 if np.random.rand() > self.icu_surv_prob:
                     update_msg = "PATIENT_DIED"
                     self.alive = False
                 else:
-                    update_msg = "PATIENT_SURVIVED_ICU"
+                    update_msg = "PATIENT_SURVIVED"
                     # Update survival probability
                     self.icu_surv_prob += self.icu_surv_prob_rate
-                    if self.icu_surv_prob_rate > np.abs(1-self.icu_surv_prob):
+                    if np.abs(1-self.icu_surv_prob) < 1/1000000:
                         self.icu_surv_prob = 1
             
             # Patient survived ICU, starts reversing critical state
@@ -106,6 +105,7 @@ class Patient:
                 self.icu_surv_prob = None
                 self.icu_surv_prob_rate = None
                 self.crit_rate = -1/np.round(np.random.triangular(t_crit_min, t_crit_mean, t_crit_max))
+                update_msg = "PATIENT_SURVIVED_ICU_AND_LEFT"
 
                 
         else:

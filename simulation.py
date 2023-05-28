@@ -28,6 +28,8 @@ class Simulation:
         
         # Report variables
         self.icu_admissions = np.zeros(self.t_sim)
+        self.deaths = np.zeros(self.t_sim)
+        self.total_number_of_patients = self.num_patients
         
     def init(self):
         for i in range(0, self.num_patients):
@@ -52,9 +54,15 @@ class Simulation:
                                               self.surv_state, self.crit_trans_prob,\
                                               self.icu_surv_prob_map, self.remote_detection_prob_map)
                 
-                # Record each patient's state at current time
                 if msg == "REACHED_FULLY_CRITICAL":
                     self.icu_admissions[t] += 1
+                elif msg == "PATIENT_DIED":
+                    self.deaths[t] += 1
+                    new_patient = Patient(pat_id=self.patients[p].pat_id)
+                    self.patients[p] = new_patient
+                    self.total_number_of_patients += 1
+                    
+                    
                 
             print(t)
             

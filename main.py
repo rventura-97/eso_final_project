@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# %% Import required modules
+import numpy as np
 from simulation import Simulation
 from aux_functions import compute_icu_surv_prob_map
 from aux_functions import generate_appointments_schedule
@@ -12,7 +14,7 @@ t_crit_mean = 56 # days
 t_crit_min = 7 # days
 t_crit_max = 105 # days
 max_crit_reversal_prob = 0.3
-icu_surv_base_prob = 0.7
+icu_surv_base_prob = 0.8
 icu_t_max = 28 # days
 icu_t_min = 7 # days
 icu_surv_prob_map = compute_icu_surv_prob_map(icu_surv_base_prob,icu_t_max,icu_t_min)
@@ -33,3 +35,6 @@ sim.init()
 
 # %% Run simulation
 sim.run()
+
+# %%
+death_rate = np.sum(sim.deaths) / sim.total_number_of_patients
