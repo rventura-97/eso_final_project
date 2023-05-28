@@ -76,11 +76,10 @@ class Patient:
                 self.remote_detect_prob = 0
                 self.remote_detect_prob_rate = remote_detection_prob_map.loc[crit_days,"detect_prob_inc_rate"]
                 
-            # Try to diganose criticality state if there is remote patient monitoring
+            # Try to diagnose criticality state if there is remote patient monitoring
             if surv_state == "REMOTE" and self.crit_rate > 0 and\
-                self.crit_state < 1 and self.remote_detect_prob != None: # self.crit_state > 0 (?)
-                # Update remote detection probability
-                self.remote_detect_prob += self.remote_detect_prob_rate
+                self.crit_state < 1 and self.crit_state_at_detection == None and\
+                self.remote_detect_prob != None: # self.crit_state > 0 (?)
                 # Random chance of correct positive diagnosis
                 if np.random.rand() < self.remote_detect_prob:   
                     update_msg[1] = 1
@@ -89,7 +88,9 @@ class Patient:
                     if np.random.rand() < -max_crit_reversal_prob*self.crit_state + max_crit_reversal_prob:
                         self.crit_rate = -self.crit_rate
                         self.crit_state_at_detection = None
-                        update_msg[2] = 1
+                        update_msg[2] = 1      
+                # Update remote detection probability
+                self.remote_detect_prob += self.remote_detect_prob_rate
                     
             # Update state at ICU
             if self.crit_state == 1 and self.crit_rate == 0 and self.icu_surv_prob < 1:
@@ -109,6 +110,8 @@ class Patient:
                 self.crit_state_at_detection = None
                 self.icu_surv_prob = None
                 self.icu_surv_prob_rate = None
+                self.remote_detect_prob = None
+                self.remote_detect_prob_rate = None
                 self.crit_rate = -1/np.round(np.random.triangular(t_crit_min, t_crit_mean, t_crit_max))
 
         
