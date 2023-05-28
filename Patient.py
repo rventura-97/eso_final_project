@@ -12,6 +12,8 @@ class Patient:
         self.crit_state_at_detection = None
         self.icu_surv_prob = None
         self.icu_surv_prob_rate = None
+        self.remote_detect_prob = None
+        self.remote_detect_prob_rate = None
         
     def update(self, t, t_crit_mean, t_crit_min, t_crit_max, t_appoint,\
                max_crit_reversal_prob, surv_state, crit_trans_prob,\
@@ -63,8 +65,26 @@ class Patient:
                         self.crit_rate = -self.crit_rate
                         self.crit_state_at_detection = None
                         
-            # Try remote diagnose
-            
+            # Trigger remote diagnose
+            if surv_state == "REMOTE" and self.crit_rate > 0 and\
+                self.crit_state < 1 and self.remote_detect_prob == None: # self.crit_state > 0 (?)
+                crit_days = np.round(1/self.crit_rate)
+                self.remote_detect_prob = 0
+                self.remote_detect_prob_rate = remote_detection_prob_map.loc[crit_days,"detect_prob_inc_rate"]
+                
+            # Try to diganose criticality state if there is remote patient monitoring
+            if surv_state == "REMOTE" and self.crit_rate > 0 and\
+                self.crit_state < 1 and self.remote_detect_prob != None: # self.crit_state > 0 (?)
+                # Update remote detection probability
+                self.remote_detect_prob += self.remote_detect_prob_rate
+                # Random chance of correct positive diagnosis
+                if np.random.rand() < self.remote_detect_prob:   
+                    update_msg = "REMOTE_DIAGNOSE_BEFORE_CRITICAL"
+                    self.crit_state_at_detection = self.crit_state
+                    # Random chance of reversing transition to critical state
+                    if np.random.rand() < -max_crit_reversal_prob*self.crit_state + max_crit_reversal_prob:
+                        self.crit_rate = -self.crit_rate
+                        self.crit_state_at_detection = None
                     
             # Update alive state at ICU
             if self.crit_state == 1 and self.crit_rate == 0 and self.icu_surv_prob < 1:
