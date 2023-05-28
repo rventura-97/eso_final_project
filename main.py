@@ -8,7 +8,7 @@ from aux_functions import compute_remote_detect_prob_map
 
 # %% Simulation parameters (fixed)
 t_sim = 25*365
-num_patients = 1#25000
+num_patients = 1 #25000
 crit_trans_prob = 0.0005
 t_crit_mean = 56 # days
 t_crit_min = 7 # days
@@ -20,6 +20,7 @@ icu_t_min = 7 # days
 icu_surv_prob_map = compute_icu_surv_prob_map(icu_surv_base_prob,icu_t_max,icu_t_min)
 
 # %% Simulation parameters (variable)
+type_of_monitoring = "REMOTE"
 appointments_interval = 28 # days
 appointments_schedule = generate_appointments_schedule(num_patients, appointments_interval, t_sim)
 remote_detection_prob = 0.7
@@ -27,8 +28,8 @@ remote_detection_prob_map = compute_remote_detect_prob_map(remote_detection_prob
 
 # %% Initialize simulation
 sim = Simulation(t_sim, num_patients, crit_trans_prob,\
-                 t_crit_mean, t_crit_min, t_crit_max,"NONE",\
-                 max_crit_reversal_prob,\
+                 t_crit_mean, t_crit_min, t_crit_max,\
+                 type_of_monitoring, max_crit_reversal_prob,\
                  icu_t_max, icu_t_min, appointments_schedule,\
                  icu_surv_prob_map, remote_detection_prob_map)
 sim.init()
@@ -36,5 +37,3 @@ sim.init()
 # %% Run simulation
 sim.run()
 
-# %%
-death_rate = np.sum(sim.deaths) / sim.total_number_of_patients
