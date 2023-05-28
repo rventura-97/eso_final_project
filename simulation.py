@@ -46,10 +46,11 @@ class Simulation:
                 else:
                     t_appoint = False
                     
-                msg = self.patients[p].update(self.t_crit_mean,\
+                msg = self.patients[p].update(t, self.t_crit_mean,\
                                               self.t_crit_min, self.t_crit_max,\
                                               t_appoint, self.max_crit_reversal_prob,\
-                                              self.surv_state, self.crit_trans_prob)
+                                              self.surv_state, self.crit_trans_prob,\
+                                              self.icu_surv_prob_map, self.remote_detection_prob_map)
                 
                 # Record each patient's state at current time
                 if msg == "REACHED_FULLY_CRITICAL":
