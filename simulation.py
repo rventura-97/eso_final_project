@@ -29,6 +29,7 @@ class Simulation:
         # Report variables
         self.crit_evol_markers = np.zeros((self.t_sim, self.num_patients),dtype=bool)
         self.positive_diagnoses = np.zeros((self.t_sim, self.num_patients),dtype=bool)
+        self.crit_reversals = np.zeros((self.t_sim, self.num_patients),dtype=bool)
         self.icu_occupancy = np.zeros((self.t_sim, self.num_patients),dtype=bool)
         self.deaths = np.zeros((self.t_sim, self.num_patients),dtype=bool)
         
@@ -63,9 +64,11 @@ class Simulation:
                 if msg[1] == 1:
                     self.positive_diagnoses[t,p] = True
                 if msg[2] == 1:
-                    self.icu_occupancy[t,p] = True
+                    self.crit_reversals[t,p] = True
                 if msg[3] == 1:
-                    self.deaths[t,p] = True                    
+                    self.icu_occupancy[t,p] = True 
+                if msg[4] == 1:
+                    self.deaths[t,p] = True  
                     
                 
             print(t)
