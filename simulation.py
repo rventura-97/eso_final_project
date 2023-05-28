@@ -27,9 +27,13 @@ class Simulation:
         self.remote_detection_prob_map = remote_detection_prob_map
         
         # Report variables
-        self.icu_admissions = np.zeros(self.t_sim)
-        self.deaths = np.zeros(self.t_sim)
-        self.total_number_of_patients = self.num_patients
+        self.crit_evol_markers = np.zeros((self.t_sim, self.num_patients),dtype=bool)
+        self.positive_diagnoses = np.zeros((self.t_sim, self.num_patients),dtype=bool)
+        self.icu_occupancy = np.zeros((self.t_sim, self.num_patients),dtype=bool)
+        self.deaths = np.zeros((self.t_sim, self.num_patients),dtype=bool)
+        
+        
+        
         
     def init(self):
         for i in range(0, self.num_patients):
@@ -54,14 +58,14 @@ class Simulation:
                                               self.surv_state, self.crit_trans_prob,\
                                               self.icu_surv_prob_map, self.remote_detection_prob_map)
                 
-                if msg == "REACHED_FULLY_CRITICAL":
-                    self.icu_admissions[t] += 1
-                elif msg == "PATIENT_DIED":
-                    self.deaths[t] += 1
-                    new_patient = Patient(pat_id=self.patients[p].pat_id)
-                    self.patients[p] = new_patient
-                    self.total_number_of_patients += 1
-                    
+                if msg[0] == 1:
+                    self.crit_evol_markers[t,p] = True
+                if msg[1] == 1:
+                    self.positive_diagnoses[t,p] = True
+                if msg[2] == 1:
+                    self.icu_occupancy[t,p] = True
+                if msg[3] == 1:
+                    self.deaths[t,p] = True                    
                     
                 
             print(t)

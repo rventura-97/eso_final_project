@@ -27,7 +27,7 @@ remote_detection_prob_map = compute_remote_detect_prob_map(remote_detection_prob
 
 # %% Initialize simulation
 sim = Simulation(t_sim, num_patients, crit_trans_prob,\
-                 t_crit_mean, t_crit_min, t_crit_max,"NONE",\
+                 t_crit_mean, t_crit_min, t_crit_max,"LOCAL",\
                  max_crit_reversal_prob,\
                  icu_t_max, icu_t_min, appointments_schedule,\
                  icu_surv_prob_map, remote_detection_prob_map)
