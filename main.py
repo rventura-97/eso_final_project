@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # %% Import required modules
-import numpy as np
 from simulation import Simulation
 from aux_functions import compute_icu_surv_prob_map
 from aux_functions import generate_appointments_schedule
@@ -27,7 +26,7 @@ remote_detection_prob = 0.7
 remote_detection_prob_map = compute_remote_detect_prob_map(remote_detection_prob, t_crit_max, t_crit_min)
 
 # %% Initialize simulation
-sim = Simulation(t_sim, num_patients, crit_trans_prob,\
+sim = Simulation("MYSIM", t_sim, num_patients, crit_trans_prob,\
                  t_crit_mean, t_crit_min, t_crit_max,\
                  type_of_monitoring, max_crit_reversal_prob,\
                  icu_t_max, icu_t_min, appointments_schedule,\
