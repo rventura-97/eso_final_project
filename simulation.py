@@ -50,10 +50,12 @@ class Simulation:
     def run(self):
         t_start = time()
         for t in range(0, self.t_sim):
+            appointments_t_patients = self.appointments_schedule[t,[0,-1]]
             for p in range(0, self.num_patients):
                 # Update each patient
                 if self.surv_state == "LOCAL":
-                    if np.isin(self.patients[p].pat_id, self.appointments_schedule[t,0]):
+                    if self.patients[p].pat_id >= appointments_t_patients[0] and\
+                       self.patients[p].pat_id <= appointments_t_patients[1]:
                         t_appoint = True
                     else:
                         t_appoint = False
