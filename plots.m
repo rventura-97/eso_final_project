@@ -1,3 +1,21 @@
+%% Criticality period plot
+pd = makedist("Triangular","a",-1,"b",0,"c",1);
+x = -2:0.01:2;
+pdf_vals = pdf(pd,x);
+plot(x,pdf_vals,"LineWidth",5,"Color","k");
+
+%% Criticality reversal probability plot
+c = 0:0.05:1;
+p_c = 0.3*(1-c);
+figure;
+plot(c,p_c,"LineWidth",5,"Color","k");
+
+%%
+x = 1:1:3;
+y = 0.5+(1/3/0.5)*x;
+figure
+stem(x,y,'filled','LineWidth',3,'Color',"k")
+
 %% Read data
 cd REPORTS
 health_metrics = readtable("health_metrics_mean.csv");
